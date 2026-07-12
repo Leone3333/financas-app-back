@@ -1,0 +1,3 @@
+gspread
+flask
+flask_cors
