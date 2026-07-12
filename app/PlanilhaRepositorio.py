@@ -1,3 +1,5 @@
+import os
+import json
 import gspread
 from google.oauth2.service_account import Credentials
 from typing import List, Dict
@@ -9,7 +11,16 @@ class PlanilhaRepositorio:
     def __init__(self):
         # iniciar conexão com planilha
         escopos = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
-        credenciais = Credentials.from_service_account_file("credenciais.json", scopes=escopos)
+        
+        # credencias em variavel de ambiente no render 
+        infos_credenciais = os.environ.get("GOOGLE_CREDENTIALS")
+
+        # converte json em dicionario python
+        credencias_dict = json.loads(infos_credenciais)
+        
+        #  método que lê as credenciais em dicionario python
+        credenciais = Credentials.from_service_account_info(credencias_dict, scopes=escopos)
+        
         self.cliente = gspread.authorize(credenciais)
         self.planilha = self.cliente.open("gastos_projects")
         self.aba_categorias = self.planilha.worksheet('categorias') 
