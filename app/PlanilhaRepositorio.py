@@ -12,15 +12,16 @@ class PlanilhaRepositorio:
         # iniciar conexão com planilha
         escopos = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
         
-        # credencias em variavel de ambiente no render 
-        infos_credenciais = os.environ.get("GOOGLE_CREDENTIALS")
+        info_env = os.environ.get("GOOGLE_CREDENTIALS")
 
-        # converte json em dicionario python
-        credencias_dict = json.loads(infos_credenciais)
-        
-        #  método que lê as credenciais em dicionario python
-        credenciais = Credentials.from_service_account_info(credencias_dict, scopes=escopos)
-        
+        if info_env:
+            # Se estiver rodando no Render (Nuvem)
+            credencias_dict = json.loads(info_env)
+            credenciais = Credentials.from_service_account_info(credencias_dict, scopes=escopos)
+        else:
+            # Se estiver rodando no seu computador pessoal (Local)
+            credenciais = Credentials.from_service_account_file("credenciais.json", scopes=escopos)
+            
         self.cliente = gspread.authorize(credenciais)
         self.planilha = self.cliente.open("gastos_projects")
         self.aba_categorias = self.planilha.worksheet('categorias') 
@@ -50,18 +51,32 @@ class PlanilhaRepositorio:
         return self.aba_categorias.get_all_records()
 
 
-    # atualizar status de pagamento do registro lembrar de passar o numero da linha do registro
-    """
-    def atualizar_status_pago(self, linha_index: int, novo_status: str) -> bool:
+    # atualizar status de considerar painel da lista de coisas a pagar
+    def atualizar_status(self, id: int,col: int, novo_status: str) -> bool:
         try:
+            registro = 0
+
+            movimentacoes = self.get_movimentacoes()
+
+            for idx, s in enumerate(movimentacoes, start=2):
+                if s['id'] == id:
+                    registro = idx
+                    print(registro)
+                    break
+
+            if registro == 0:
+                print(f"ID {id} não foi encontrado na planilha.")
+                return False
+        
             # No gspread, a linha 1 é o cabeçalho. A primeira linha de dados é a 2.
             # Coluna 6 é a coluna 'pago'
-            self.aba_dois.update_cell(linha_index, 6, novo_status)
+            self.aba_movimentacoes.update_cell(registro, col, novo_status)
             return True
         except Exception as e:
             print(f"Erro ao atualizar: {e}")
             return False
 
+    """
     # 4. DELETE Deletar registro lembrabr de passar a linha do registro
     def deletar(self, linha_index: int) -> bool:
         try:

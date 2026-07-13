@@ -32,6 +32,32 @@ def data_dashboard(mes=None):
         'lembretes': lembretes[:5],
     }),200
 
+@app.route('/api/dashboard/lembretes/', methods=['GET'])
+@app.route('/api/dashboard/lembretes/<mes>', methods=['GET'])
+def data_a_pagar_lista(mes=None):
+
+    if mes is None:
+        mes = datetime.now().strftime('%m')
+
+    m = repo.get_movimentacoes()
+    a_pagar = dashboard.get_a_pagar(mes,m)
+    a_pagar_lista = dashboard.get_a_pagar_lista(mes,m)
+
+    return jsonify({
+        'mes': mes,
+        'a_pagar': a_pagar,
+        'a_pagar_lista': a_pagar_lista,
+    }),200
+
+@app.route('/api/dashboard/lembretes/<int:id>/<int:col>/<novo_status>', methods=['PUT'])
+def update_considerar_painel(id,col,novo_status):
+
+    update_line = repo.atualizar_status(id,col,novo_status)
+
+    return jsonify({
+        'status_request': update_line    
+    }),200
+
 if __name__ == '__main__':
     app.run(host,debug=True,port=port)
 

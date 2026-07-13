@@ -33,6 +33,7 @@ class DashboardRepositorio:
         total_a_pagar = sum(g['valor'] for g in lista_movimentacoes 
                             if g['tipo'] == 'saida' 
                             and  g['pago'] == 'nao' 
+                            and  g['considerar_no_painel'] == 'sim' 
                             and g['data'][5:7] == mes 
                             )
 
@@ -45,6 +46,7 @@ class DashboardRepositorio:
                             g for g in lista_movimentacoes
                             if g['tipo'] == 'saida'
                             and g['pago'] == 'nao'
+                            and  g['considerar_no_painel'] == 'sim' 
                             and g['data'][5:7] == mes
                         ]
         

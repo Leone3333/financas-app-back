@@ -27,23 +27,35 @@ print("\n--- 2.1 Valor Saidas ---")
 print(f"Total saidas: {dashboard.get_total_saida(m)}")
 
 print("\n--- 2.2 Valor Entradas ---")
-print(f"Total saidas: {dashboard.get_total_entrada(m)}")
+print(f"Total entradas: {dashboard.get_total_entrada(m)}")
 
 print("\n--- 2.3 Valor Saldo atual ---")
 print(f"Total saidas: {dashboard.get_saldo_atual(m)}")
 
+mes = '08'
 
 print("\n--- 3 Valor devendo no mês ---")
-a_pagar = dashboard.get_a_pagar_lista('07',m)
+a_pagar = dashboard.get_a_pagar_lista(mes,m)
 
-for idx, s in enumerate(a_pagar, start=1):
-    print(f"Linha {idx}: {s['descricao']} - R$ {s['valor']} (Vencimento: {s['data']})")
+# for idx, s in enumerate(a_pagar, start=1):
+#     print(f"Linha {idx}: {s['descricao']} - R$ {s['valor']} (Vencimento: {s['data']})")
 
-print(f"Total a pagar no mes 07: {dashboard.get_a_pagar('07',m)}")
+# print(f"Total a pagar no mes {mes}: {dashboard.get_a_pagar(mes,m)}")
 
 
 print("\n--- 4 Lista lembretes ---")
-lembrete = dashboard.get_lembrentes(m)
+lembretes = dashboard.get_lembrentes(m)
 
-for index, l in enumerate(lembrete[:5],start=1):
-    print(f"Linha: {index}:  (Tipo de lembrete: {l['tipo']}) -- {l['descricao']} -- R$ {l['valor']} -- (Vencimento: {l['data']})")
+lembrete = [g for g in lembretes if g['id'] == 3]
+
+# for index, l in enumerate(lembretes[:5],start=1):
+#     print(f"Linha: {index}:  (Tipo de lembretes: {l['tipo']}) -- {l['descricao']} -- R$ {l['valor']} -- (Vencimento: {l['data']})")
+
+print("\n--- 6 Alterando status de considerar painel de a pagar e lembretes ---")
+print(f"Lembrete de id 3 na linha 4:  {lembrete}")
+
+# col 10: considerar_painel
+# col 9: pago
+lembrete_atualizado = repo.atualizar_status(3,9,'sim')
+
+print(f"Lembrete atualizado {lembrete_atualizado}")
