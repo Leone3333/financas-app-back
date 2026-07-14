@@ -52,7 +52,7 @@ class PlanilhaRepositorio:
 
 
     # atualizar status de considerar painel da lista de coisas a pagar
-    def atualizar_status(self, id: int,col: int, novo_status: str) -> bool:
+    def atualizar_movimentacao(self, id: int, dados_atualizados: dict) -> bool:
         try:
             registro = 0
 
@@ -67,10 +67,31 @@ class PlanilhaRepositorio:
             if registro == 0:
                 print(f"ID {id} não foi encontrado na planilha.")
                 return False
-        
+
+            registro_atual = movimentacoes[registro - 2]
+            dados_finais = {**registro_atual, **dados_atualizados}
+
+            linha_para_salvar = [
+                dados_finais.get('id'),
+                dados_finais.get('data'),
+                dados_finais.get('descricao'),
+                dados_finais.get('valor'),
+                dados_finais.get('tipo'),
+                dados_finais.get('categoria_id'),
+                dados_finais.get('banco_id'),
+                dados_finais.get('forma_pagamento'),
+                dados_finais.get('pago'),
+                dados_finais.get('considerar_no_painel'),
+                dados_finais.get('parcela_atual'),
+                dados_finais.get('parcela_total')
+            ]
+            
+            intervalo = f"A{registro}:L{registro}"
+
             # No gspread, a linha 1 é o cabeçalho. A primeira linha de dados é a 2.
             # Coluna 6 é a coluna 'pago'
-            self.aba_movimentacoes.update_cell(registro, col, novo_status)
+            self.aba_movimentacoes.update(range_name=intervalo,values=[linha_para_salvar])
+            print(f"Linha {registro} atualizada com sucesso!")
             return True
         except Exception as e:
             print(f"Erro ao atualizar: {e}")

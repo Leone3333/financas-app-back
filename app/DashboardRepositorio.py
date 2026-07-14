@@ -59,6 +59,23 @@ class DashboardRepositorio:
         hoje = datetime.now().date()
         
         # 2. Ordena calculando a distância absoluta de dias até o dia de hoje
+        lembretes = [l for l in lista_movimentacoes if l['pago'] == "nao" and l['considerar_no_painel'] == "sim"]
+
+        lembretes_filtrados = sorted(
+            lembretes, 
+            key=lambda g: abs((datetime.strptime(g['data'], "%Y-%m-%d").date() - hoje).days)
+        )
+
+        
+        return lembretes_filtrados
+    
+    def get_all_lembrentes(self, lista_movimentacoes: List[Dict]) -> List[Dict]: 
+        from datetime import datetime
+
+        # 1. Pega a data de hoje exata do sistema
+        hoje = datetime.now().date()
+        
+        # 2. Ordena calculando a distância absoluta de dias até o dia de hoje
         lembretes = [l for l in lista_movimentacoes if l['pago'] == "nao"]
 
         lembretes_filtrados = sorted(

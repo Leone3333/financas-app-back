@@ -49,14 +49,23 @@ def data_a_pagar_lista(mes=None):
         'a_pagar_lista': a_pagar_lista,
     }),200
 
-@app.route('/api/dashboard/lembretes/<int:id>/<int:col>/<novo_status>', methods=['PUT'])
-def update_considerar_painel(id,col,novo_status):
+@app.route('/api/dashboard/update/<int:id>', methods=['PATCH'])
+def update_linha(id):
 
-    update_line = repo.atualizar_status(id,col,novo_status)
+    dados_form = request.get_json()
 
-    return jsonify({
-        'status_request': update_line    
-    }),200
+    update_line = repo.atualizar_movimentacao(id,dados_form)
+
+    if update_line:
+        return jsonify({
+            "status": "sucesso", 
+            "mensagem": f"O registro com ID {id} foi completamente atualizado!"
+        }), 200
+    else:
+        return jsonify({
+            "status": "erro", 
+            "mensagem": f"Não foi possível encontrar ou atualizar o ID {id}."
+        }), 400 
 
 if __name__ == '__main__':
     app.run(host,debug=True,port=port)
