@@ -32,8 +32,8 @@ def data_dashboard(mes=None):
         'lembretes': lembretes[:5],
     }),200
 
-@app.route('/api/dashboard/lembretes/', methods=['GET'])
-@app.route('/api/dashboard/lembretes/<mes>', methods=['GET'])
+@app.route('/api/dashboard/aPagarPainel/', methods=['GET'])
+@app.route('/api/dashboard/aPagarPainel/<mes>', methods=['GET'])
 def data_a_pagar_lista(mes=None):
 
     if mes is None:
